@@ -1,3 +1,3 @@
 # snake
 
-Just a snake game.
+Just a snake game : )
