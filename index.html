@@ -6,6 +6,8 @@
         body {
             text-align: center;
             margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
         canvas {
             display: block;
@@ -17,16 +19,32 @@
 <body>
     <h1>Snake Game</h1>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div>
+        <button id="easyBtn">Easy</button>
+        <button id="mediumBtn">Medium</button>
+        <button id="hardBtn">Hard</button>
+    </div>
+    <div id="scoreboard">Score: 0</div>
     <script>
         // Canvas setup
         const canvas = document.getElementById('gameCanvas');
         const context = canvas.getContext('2d');
+        const scoreboard = document.getElementById('scoreboard');
 
         // Game variables
         let snake = [{ x: 10, y: 10 }];
         let direction = 'RIGHT';
         let food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
         let score = 0;
+        let speed = 200;
+        let isPaused = false;
+
+        // Obstacles
+        const obstacles = [
+            { x: 5, y: 5 },
+            { x: 15, y: 15 },
+            { x: 10, y: 15 }
+        ];
 
         // Draw functions
         function drawSnake() {
@@ -41,10 +59,15 @@
             context.fillRect(food.x * 20, food.y * 20, 20, 20);
         }
 
-        function drawScore() {
-            context.fillStyle = 'white';
-            context.font = '20px Arial';
-            context.fillText(`Score: ${score}`, 10, 390);
+        function drawObstacles() {
+            context.fillStyle = 'gray';
+            obstacles.forEach(obstacle => {
+                context.fillRect(obstacle.x * 20, obstacle.y * 20, 20, 20);
+            });
+        }
+
+        function updateScoreboard() {
+            scoreboard.textContent = `Score: ${score}`;
         }
 
         // Game logic
@@ -71,6 +94,11 @@
             if (head.x === food.x && head.y === food.y) {
                 score += 1;
                 food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
+                updateScoreboard();
+                // Increase speed as score increases
+                if (score % 5 === 0) {
+                    speed = Math.max(speed - 20, 50);
+                }
             } else {
                 snake.pop();
             }
@@ -89,26 +117,36 @@
                 }
             }
 
+            for (let i = 0; i < obstacles.length; i++) {
+                if (head.x === obstacles[i].x && head.y === obstacles[i].y) {
+                    return true;
+                }
+            }
+
             return false;
         }
 
         // Main game loop
         function gameLoop() {
-            if (checkCollision()) {
-                alert(`Game Over! Your score: ${score}`);
-                snake = [{ x: 10, y: 10 }];
-                direction = 'RIGHT';
-                score = 0;
+            if (!isPaused) {
+                if (checkCollision()) {
+                    alert(`Game Over! Your score: ${score}`);
+                    snake = [{ x: 10, y: 10 }];
+                    direction = 'RIGHT';
+                    score = 0;
+                    speed = 200;
+                    updateScoreboard();
+                }
+
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                drawSnake();
+                drawFood();
+                drawObstacles();
+                updateSnake();
             }
 
-            context.clearRect(0, 0, canvas.width, canvas.height);
-
-            drawSnake();
-            drawFood();
-            drawScore();
-            updateSnake();
-
-            setTimeout(gameLoop, 100);
+            setTimeout(gameLoop, speed);
         }
 
         // Control snake direction
@@ -126,7 +164,21 @@
                 case 'ArrowDown':
                     if (direction !== 'UP') direction = 'DOWN';
                     break;
+                case ' ':
+                    isPaused = !isPaused;
+                    break;
             }
+        });
+
+        // Difficulty buttons
+        document.getElementById('easyBtn').addEventListener('click', () => {
+            speed = 200;
+        });
+        document.getElementById('mediumBtn').addEventListener('click', () => {
+            speed = 150;
+        });
+        document.getElementById('hardBtn').addEventListener('click', () => {
+            speed = 100;
         });
 
         // Start the game
