@@ -1,188 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Snake Game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Snake (A* Algorithm)</title>
     <style>
-        body {
-            text-align: center;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+        #gameArea { 
+            width: 500px; 
+            height: 500px; 
+            position: relative; 
+            background-color: #000; 
         }
-        canvas {
-            display: block;
-            margin: auto;
-            background-color: #000;
+        .snake, .food { 
+            width: 20px; 
+            height: 20px; 
+            position: absolute; 
         }
+        .snake { background-color: green; }
+        .food { background-color: red; }
     </style>
 </head>
 <body>
-    <h1>Snake Game</h1>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div>
-        <button id="easyBtn">Easy</button>
-        <button id="mediumBtn">Medium</button>
-        <button id="hardBtn">Hard</button>
-    </div>
-    <div id="scoreboard">Score: 0</div>
-    <script>
-        // Canvas setup
-        const canvas = document.getElementById('gameCanvas');
-        const context = canvas.getContext('2d');
-        const scoreboard = document.getElementById('scoreboard');
-
-        // Game variables
-        let snake = [{ x: 10, y: 10 }];
-        let direction = 'RIGHT';
-        let food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
-        let score = 0;
-        let speed = 200;
-        let isPaused = false;
-
-        // Obstacles
-        const obstacles = [
-            { x: 5, y: 5 },
-            { x: 15, y: 15 },
-            { x: 10, y: 15 }
-        ];
-
-        // Draw functions
-        function drawSnake() {
-            context.fillStyle = 'lime';
-            snake.forEach(segment => {
-                context.fillRect(segment.x * 20, segment.y * 20, 20, 20);
-            });
-        }
-
-        function drawFood() {
-            context.fillStyle = 'red';
-            context.fillRect(food.x * 20, food.y * 20, 20, 20);
-        }
-
-        function drawObstacles() {
-            context.fillStyle = 'gray';
-            obstacles.forEach(obstacle => {
-                context.fillRect(obstacle.x * 20, obstacle.y * 20, 20, 20);
-            });
-        }
-
-        function updateScoreboard() {
-            scoreboard.textContent = `Score: ${score}`;
-        }
-
-        // Game logic
-        function updateSnake() {
-            const head = { ...snake[0] };
-
-            switch (direction) {
-                case 'LEFT':
-                    head.x -= 1;
-                    break;
-                case 'UP':
-                    head.y -= 1;
-                    break;
-                case 'RIGHT':
-                    head.x += 1;
-                    break;
-                case 'DOWN':
-                    head.y += 1;
-                    break;
-            }
-
-            snake.unshift(head);
-
-            if (head.x === food.x && head.y === food.y) {
-                score += 1;
-                food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
-                updateScoreboard();
-                // Increase speed as score increases
-                if (score % 5 === 0) {
-                    speed = Math.max(speed - 20, 50);
-                }
-            } else {
-                snake.pop();
-            }
-        }
-
-        function checkCollision() {
-            const head = snake[0];
-
-            if (head.x < 0 || head.y < 0 || head.x >= 20 || head.y >= 20) {
-                return true;
-            }
-
-            for (let i = 1; i < snake.length; i++) {
-                if (head.x === snake[i].x && head.y === snake[i].y) {
-                    return true;
-                }
-            }
-
-            for (let i = 0; i < obstacles.length; i++) {
-                if (head.x === obstacles[i].x && head.y === obstacles[i].y) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        // Main game loop
-        function gameLoop() {
-            if (!isPaused) {
-                if (checkCollision()) {
-                    alert(`Game Over! Your score: ${score}`);
-                    snake = [{ x: 10, y: 10 }];
-                    direction = 'RIGHT';
-                    score = 0;
-                    speed = 200;
-                    updateScoreboard();
-                }
-
-                context.clearRect(0, 0, canvas.width, canvas.height);
-
-                drawSnake();
-                drawFood();
-                drawObstacles();
-                updateSnake();
-            }
-
-            setTimeout(gameLoop, speed);
-        }
-
-        // Control snake direction
-        document.addEventListener('keydown', (event) => {
-            switch (event.key) {
-                case 'ArrowLeft':
-                    if (direction !== 'RIGHT') direction = 'LEFT';
-                    break;
-                case 'ArrowUp':
-                    if (direction !== 'DOWN') direction = 'UP';
-                    break;
-                case 'ArrowRight':
-                    if (direction !== 'LEFT') direction = 'RIGHT';
-                    break;
-                case 'ArrowDown':
-                    if (direction !== 'UP') direction = 'DOWN';
-                    break;
-                case ' ':
-                    isPaused = !isPaused;
-                    break;
-            }
-        });
-
-        // Difficulty buttons
-        document.getElementById('easyBtn').addEventListener('click', () => {
-            speed = 200;
-        });
-        document.getElementById('mediumBtn').addEventListener('click', () => {
-            speed = 150;
-        });
-        document.getElementById('hardBtn').addEventListener('click', () => {
-            speed = 100;
-        });
-
-        // Start the game
-        gameLoop();
-    </script>
+    <div id="gameArea"></div>
+    <script src="snake.js"></script>
 </body>
 </html>
