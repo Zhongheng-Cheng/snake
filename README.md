@@ -2,8 +2,12 @@
 
 Just a snake game : )
 
-## Features
+### Algorithms
 
-- **Automatic Pathfinding**: The snake autonomously finds the shortest path towards food items using the A* pathfinding algorithm.
-- **Deadlock Avoidance**: Advanced logic to navigate around self-created barriers and avoid no-exit scenarios.
-- **Responsive Graphical Interface**: A clean, responsive GUI built with HTML, CSS, and JavaScript that adjusts to different screen sizes.
+- **A* Pathfinding Algorithm**:
+  - **Purpose**: Allows the snake to calculate the shortest and safest path to the food.
+  - **Implementation**: Combines heuristic-based searching (to predict distances) with Dijkstra's algorithm (to ensure the shortest path), prioritizing nodes based on estimated costs to reach the goal and known path costs.
+- **Heuristic Function**:
+  - **Manhattan Distance**: Used to estimate the distance from any point on the grid to the food, influencing the decision-making process in path selection.
+- **Deadlock Detection and Resolution**:
+  - **Strategy**: Implements checks to detect potential deadlocks early and alter the snake's path to prevent game-ending scenarios.
