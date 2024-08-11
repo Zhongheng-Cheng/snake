@@ -4,7 +4,7 @@ Just a snake game : )
 
 ### Algorithms
 
-- **A* Pathfinding Algorithm**:
+- **A\* Pathfinding Algorithm**:
   - **Purpose**: Allows the snake to calculate the shortest and safest path to the food.
   - **Implementation**: Combines heuristic-based searching (to predict distances) with Dijkstra's algorithm (to ensure the shortest path), prioritizing nodes based on estimated costs to reach the goal and known path costs.
 - **Heuristic Function**:
